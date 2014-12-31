@@ -19,6 +19,7 @@ var paths = {
 	libs: ['libs/{,*/}*.js'],
 	styles: ['styles/{,*/}*.css'],
 	fonts: ['fonts/*'],
+	img: ['img/*'],
 	html: ['*.html'],
 	misc: ['favicon.ico', 'logo.png', 'robots.txt', 'humans.txt']
 };
@@ -67,6 +68,12 @@ gulp.task('fonts', function() {
 		.pipe(connect.reload());
 });
 
+gulp.task('img', function() {
+	gulp.src(paths.img)
+		.pipe(gulp.dest('./dist/img'))
+		.pipe(connect.reload());
+});
+
 gulp.task('html', function() {
 	gulp.src(paths.html)
 		.pipe(gulp.dest('./dist'))
@@ -83,8 +90,9 @@ gulp.task('watch', function() {
 	gulp.watch(paths.scripts, ['lint', 'scripts']);
 	gulp.watch(paths.styles, ['styles']);
 	gulp.watch(paths.fonts, ['fonts']);
+	gulp.watch(paths.img, ['img']);
 	gulp.watch(paths.html, ['html']);
 	gulp.watch(paths.misc, ['misc']);
 });
 
-gulp.task('default', ['lint', 'scripts', 'libs', 'styles', 'fonts', 'html', 'misc', 'connect', 'watch']);
+gulp.task('default', ['lint', 'scripts', 'libs', 'styles', 'fonts', 'img', 'html', 'misc', 'connect', 'watch']);

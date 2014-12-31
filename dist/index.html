@@ -31,6 +31,56 @@
 	<link rel="icon" href="http://ngryman.sh/obelisk-buildr/favicon.ico">
 
     <link href="app.css" rel="stylesheet">
+
+    <!-- LOAD IMAGE / JQUERY REQUIRED -->
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="js/jquery.min.js"><\/script>')</script>
+
+	<style>
+	.thumbnails {
+		list-style: none;
+		margin: 10px 0 8px 0;
+		display: inline-block;
+	}
+	.thumbnails li {
+		display: inline;
+		margin: 10px;
+	}
+
+	.thumbnails li.active {
+		border-top: 10px solid rgb(70, 157, 70);
+	}
+	.currently {
+		margin: 0;
+		padding: 0 0 0 0;
+		display: inline-block;
+		font-size: 18px;
+		margin-right: 25px;
+	}
+	.select {
+		font-size: 18px;
+		margin: 0; 
+	}
+	.drop-image {
+		display: none;
+	}
+
+	.drop-zone {
+		display: inline-block;
+		height: 20px;
+		width: 20px;
+		border: 2px dashed #666;
+		margin-left: 10px;
+		margin-right: 10px;
+	}
+
+	.drop-over {
+		border-color: #CACACA;
+		background-color: #2d2d2d;
+	}
+
+	</style>	
+
 </head>
 
 <body>
@@ -44,6 +94,23 @@
 </header>
 
 <main>
+
+	<h2 class="select">Select an icon to be displayed using the <strong>ObeliskBuilder</strong></h2>
+	<ul class="thumbnails">
+		<li class="active"><a href="#"><img src="./img/cool.gif" alt=""></a></li>
+		<li><a href="#"><img src="./img/cross.gif" alt=""></a></li>
+		<li><a href="#"><img src="./img/rss.gif" alt=""></a></li>
+		<li><a href="#"><img src="./img/smiley.gif" alt=""></a></li>
+		<li><a href="#"><img src="./img/twitter.gif" alt=""></a></li>
+	</ul>
+
+	<div class="drop-zone"></div><span>&lt;-- or drop your 20x20 image here...</span>
+
+	<br><h2 class="currently">Currently Displaying: </h2><img class="drop-image" src="" />
+
+	<canvas id="myCanvas" width="20" height="20">
+	<!-- Insert fallback content here -->
+	</canvas>
 
 	<div id="buildr">
 		<canvas id="scene"></canvas>
@@ -125,18 +192,6 @@
 <!-- entry point -->
 <script>
 	app.init();
-</script>
-
-<!-- google analytics -->
-<script>
-	(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-		(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-		m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-	ga('create', 'UA-5779130-8', 'ngryman.sh');
-	ga('send', 'pageview');
-
 </script>
 
 </body>

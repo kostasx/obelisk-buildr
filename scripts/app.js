@@ -38,9 +38,70 @@ var fullCanvased = false;
 var app = {};
 
 /**
+ *  Shift Detect
+ */
+app.shiftHandler = false;
+
+// Wow! What a bad, bad practice... Shame on me!
+app.createPixelArray = function( imageDataArray, width, height ){
+
+	var pixelArray = []; // Array( width * height )
+
+	var initial = 0;
+	var tetarto = 0;
+	var x = 0;
+	var y = 0;
+	var z = 0;
+
+	$.each( imageDataArray.data, function( index, value ){
+
+		if ( index % 4 === 0 ){
+
+			pixelArray[initial] = { "x" : x, "y" : y, "z" : z, "c" : value.toString()[0], "rgba": [value] };
+			tetarto = 0;
+			initial++;
+			x++;
+
+			if ( x % 20 === 0 && index !== 0 ){
+				// console.log(index, y);
+				x = 0;
+				y = ( y + 1 );
+			}
+
+
+		} else {
+
+			pixelArray[initial-1].rgba.push(value);
+			tetarto++;
+
+		}
+
+	});
+
+	return pixelArray;
+
+};
+
+app.getImageData = function( imageData, image, imageCtx ){
+
+    var pixelArray = this.createPixelArray( imageData, imageData.width, imageData.height );
+
+	pixelArray = { "colors":["0x333399","9999984","0xFFFFFF","15382272","15658734"], "data": pixelArray };
+
+	// var statistics = { "colors":["7441408","9001384","13117481","15382272","15658734"], "data":[{"x":0,"y":0,"z":0,"c":2},{"x":0,"y":1,"z":0,"c":2},{"x":0,"y":1,"z":1,"c":2},{"x":0,"y":2,"z":0,"c":2},{"x":0,"y":2,"z":1,"c":2},{"x":0,"y":2,"z":2,"c":2},{"x":0,"y":2,"z":3,"c":2},{"x":0,"y":2,"z":4,"c":2},{"x":0,"y":2,"z":5,"c":2},{"x":0,"y":3,"z":0,"c":2},{"x":0,"y":3,"z":1,"c":2},{"x":0,"y":3,"z":2,"c":2},{"x":0,"y":3,"z":3,"c":2},{"x":0,"y":4,"z":0,"c":2},{"x":0,"y":4,"z":1,"c":2},{"x":0,"y":4,"z":2,"c":2},{"x":0,"y":5,"z":0,"c":2},{"x":0,"y":5,"z":1,"c":2},{"x":0,"y":5,"z":2,"c":2},{"x":0,"y":6,"z":0,"c":2},{"x":0,"y":6,"z":1,"c":2},{"x":0,"y":6,"z":2,"c":2},{"x":0,"y":6,"z":3,"c":2},{"x":0,"y":7,"z":0,"c":2},{"x":0,"y":7,"z":1,"c":2},{"x":0,"y":7,"z":2,"c":2},{"x":0,"y":7,"z":3,"c":2},{"x":0,"y":7,"z":4,"c":2},{"x":0,"y":7,"z":5,"c":2},{"x":0,"y":7,"z":6,"c":2},{"x":0,"y":8,"z":0,"c":2},{"x":0,"y":8,"z":1,"c":2},{"x":0,"y":8,"z":2,"c":2},{"x":0,"y":8,"z":3,"c":2},{"x":0,"y":8,"z":4,"c":2},{"x":0,"y":9,"z":0,"c":2},{"x":0,"y":9,"z":1,"c":2},{"x":0,"y":9,"z":2,"c":2},{"x":0,"y":9,"z":3,"c":2},{"x":0,"y":10,"z":0,"c":2},{"x":0,"y":10,"z":1,"c":2},{"x":0,"y":10,"z":2,"c":2},{"x":0,"y":11,"z":0,"c":2},{"x":0,"y":11,"z":1,"c":2},{"x":0,"y":12,"z":0,"c":2},{"x":0,"y":12,"z":1,"c":2},{"x":0,"y":12,"z":2,"c":2},{"x":0,"y":13,"z":0,"c":2},{"x":0,"y":13,"z":1,"c":2},{"x":0,"y":13,"z":2,"c":2},{"x":0,"y":13,"z":3,"c":2},{"x":0,"y":13,"z":4,"c":2},{"x":0,"y":14,"z":0,"c":2},{"x":0,"y":14,"z":1,"c":2},{"x":0,"y":14,"z":2,"c":2},{"x":0,"y":14,"z":3,"c":2},{"x":0,"y":14,"z":4,"c":2},{"x":0,"y":14,"z":5,"c":2},{"x":0,"y":15,"z":0,"c":2},{"x":0,"y":15,"z":1,"c":2},{"x":0,"y":15,"z":2,"c":2},{"x":0,"y":15,"z":3,"c":2},{"x":0,"y":15,"z":4,"c":2},{"x":0,"y":16,"z":0,"c":2},{"x":0,"y":16,"z":1,"c":2},{"x":0,"y":16,"z":2,"c":2},{"x":0,"y":16,"z":3,"c":2},{"x":0,"y":17,"z":0,"c":2},{"x":0,"y":17,"z":1,"c":2},{"x":0,"y":17,"z":2,"c":2},{"x":0,"y":18,"z":0,"c":2},{"x":0,"y":18,"z":1,"c":2},{"x":0,"y":19,"z":0,"c":2},{"x":4,"y":0,"z":0,"c":4},{"x":5,"y":0,"z":0,"c":0},{"x":5,"y":0,"z":1,"c":0},{"x":5,"y":0,"z":2,"c":0},{"x":5,"y":1,"z":0,"c":0},{"x":5,"y":1,"z":1,"c":0},{"x":5,"y":1,"z":2,"c":0},{"x":5,"y":1,"z":3,"c":0},{"x":5,"y":1,"z":4,"c":0},{"x":5,"y":2,"z":0,"c":0},{"x":5,"y":2,"z":1,"c":0},{"x":5,"y":2,"z":2,"c":0},{"x":5,"y":3,"z":0,"c":0},{"x":5,"y":3,"z":1,"c":0},{"x":5,"y":4,"z":0,"c":0},{"x":5,"y":5,"z":0,"c":0},{"x":5,"y":6,"z":0,"c":0},{"x":5,"y":7,"z":0,"c":0},{"x":5,"y":7,"z":1,"c":0},{"x":5,"y":8,"z":0,"c":0},{"x":5,"y":8,"z":1,"c":0},{"x":5,"y":9,"z":0,"c":0},{"x":5,"y":9,"z":1,"c":0},{"x":5,"y":9,"z":2,"c":0},{"x":5,"y":10,"z":0,"c":0},{"x":5,"y":10,"z":1,"c":0},{"x":5,"y":10,"z":2,"c":0},{"x":5,"y":10,"z":3,"c":0},{"x":5,"y":11,"z":0,"c":0},{"x":5,"y":11,"z":1,"c":0},{"x":5,"y":11,"z":2,"c":0},{"x":5,"y":11,"z":3,"c":0},{"x":5,"y":11,"z":4,"c":0},{"x":5,"y":11,"z":5,"c":0},{"x":5,"y":11,"z":6,"c":0},{"x":5,"y":11,"z":7,"c":0},{"x":5,"y":12,"z":0,"c":0},{"x":5,"y":12,"z":1,"c":0},{"x":5,"y":12,"z":2,"c":0},{"x":5,"y":12,"z":3,"c":0},{"x":5,"y":13,"z":0,"c":0},{"x":5,"y":13,"z":1,"c":0},{"x":5,"y":13,"z":2,"c":0},{"x":5,"y":14,"z":0,"c":0},{"x":5,"y":14,"z":1,"c":0},{"x":5,"y":14,"z":2,"c":0},{"x":5,"y":14,"z":3,"c":0},{"x":5,"y":15,"z":0,"c":0},{"x":5,"y":15,"z":1,"c":0},{"x":5,"y":15,"z":2,"c":0},{"x":5,"y":16,"z":0,"c":0},{"x":5,"y":16,"z":1,"c":0},{"x":5,"y":17,"z":0,"c":0},{"x":5,"y":17,"z":1,"c":0},{"x":5,"y":18,"z":0,"c":0},{"x":5,"y":18,"z":1,"c":0},{"x":5,"y":19,"z":0,"c":0},{"x":10,"y":1,"z":0,"c":3},{"x":10,"y":1,"z":1,"c":3},{"x":10,"y":1,"z":2,"c":3},{"x":10,"y":2,"z":0,"c":3},{"x":10,"y":2,"z":1,"c":3},{"x":10,"y":3,"z":0,"c":3},{"x":10,"y":3,"z":1,"c":3},{"x":10,"y":4,"z":0,"c":3},{"x":10,"y":4,"z":1,"c":3},{"x":10,"y":4,"z":2,"c":3},{"x":10,"y":4,"z":3,"c":3},{"x":10,"y":5,"z":0,"c":3},{"x":10,"y":5,"z":1,"c":3},{"x":10,"y":5,"z":2,"c":3},{"x":10,"y":6,"z":0,"c":3},{"x":10,"y":6,"z":1,"c":3},{"x":10,"y":6,"z":2,"c":3},{"x":10,"y":7,"z":0,"c":3},{"x":10,"y":7,"z":1,"c":3},{"x":10,"y":7,"z":2,"c":3},{"x":10,"y":8,"z":0,"c":3},{"x":10,"y":8,"z":1,"c":3},{"x":10,"y":8,"z":2,"c":3},{"x":10,"y":9,"z":0,"c":3},{"x":10,"y":9,"z":1,"c":3},{"x":10,"y":10,"z":0,"c":3},{"x":10,"y":11,"z":0,"c":3},{"x":10,"y":12,"z":0,"c":3},{"x":10,"y":12,"z":1,"c":3},{"x":10,"y":13,"z":0,"c":3},{"x":10,"y":13,"z":1,"c":3},{"x":10,"y":13,"z":2,"c":3},{"x":10,"y":14,"z":0,"c":3},{"x":10,"y":14,"z":1,"c":3},{"x":10,"y":14,"z":2,"c":3},{"x":10,"y":14,"z":3,"c":3},{"x":10,"y":15,"z":0,"c":3},{"x":10,"y":15,"z":1,"c":3},{"x":10,"y":15,"z":2,"c":3},{"x":10,"y":16,"z":0,"c":3},{"x":10,"y":16,"z":1,"c":3},{"x":10,"y":17,"z":0,"c":3},{"x":10,"y":18,"z":0,"c":3},{"x":10,"y":19,"z":0,"c":3},{"x":15,"y":0,"z":0,"c":1},{"x":15,"y":0,"z":1,"c":1},{"x":15,"y":0,"z":2,"c":1},{"x":15,"y":1,"z":0,"c":1},{"x":15,"y":1,"z":1,"c":1},{"x":15,"y":2,"z":0,"c":1},{"x":15,"y":3,"z":0,"c":1},{"x":15,"y":3,"z":1,"c":1},{"x":15,"y":3,"z":2,"c":1},{"x":15,"y":3,"z":3,"c":1},{"x":15,"y":4,"z":0,"c":1},{"x":15,"y":5,"z":0,"c":1},{"x":15,"y":6,"z":0,"c":1},{"x":15,"y":6,"z":1,"c":1},{"x":15,"y":7,"z":0,"c":1},{"x":15,"y":8,"z":0,"c":1},{"x":15,"y":9,"z":0,"c":1},{"x":15,"y":9,"z":1,"c":1},{"x":15,"y":9,"z":2,"c":1},{"x":15,"y":9,"z":3,"c":1},{"x":15,"y":9,"z":4,"c":1},{"x":15,"y":10,"z":0,"c":1},{"x":15,"y":10,"z":1,"c":1},{"x":15,"y":10,"z":2,"c":1},{"x":15,"y":11,"z":0,"c":1},{"x":15,"y":11,"z":1,"c":1},{"x":15,"y":12,"z":0,"c":1},{"x":15,"y":12,"z":1,"c":1},{"x":15,"y":13,"z":0,"c":1},{"x":15,"y":14,"z":0,"c":1},{"x":15,"y":15,"z":0,"c":1},{"x":15,"y":16,"z":0,"c":1},{"x":15,"y":16,"z":1,"c":1},{"x":15,"y":16,"z":2,"c":1},{"x":15,"y":16,"z":3,"c":1},{"x":15,"y":16,"z":4,"c":1},{"x":15,"y":16,"z":5,"c":1},{"x":15,"y":16,"z":6,"c":1},{"x":15,"y":17,"z":0,"c":1},{"x":15,"y":17,"z":1,"c":1},{"x":15,"y":17,"z":2,"c":1},{"x":15,"y":17,"z":3,"c":1},{"x":15,"y":18,"z":0,"c":1},{"x":15,"y":18,"z":1,"c":1},{"x":15,"y":18,"z":2,"c":1},{"x":15,"y":19,"z":0,"c":1}]};
+
+    // console.log(pixelArray);
+
+    return pixelArray;
+
+
+};
+
+/**
  *
  */
 app.init = function() {
+
 	ui.auth.init();
 	ui.scene.init();
 
@@ -60,20 +121,124 @@ app.init = function() {
 
 		touchDisclaimer();
 
+		/*
 		// fetches initial art
 		storage.fetch(function(err, data, info) {
 			if (err) return ui.notification.error(err);
-
 			if (data) ui.scene.load(data);
 			if (info) ui.notification.info(info);
-
 			// auto save from now on
 			ui.scene.changed(onAutoSave);
 		});
+		*/
+
 	});
 
-	logCurious();
+	loadImage( "./img/cool.gif" );
+
+	// HANDLE THUMBNAIL CHANGE
+	$(".thumbnails li").click(function(e){
+
+		var imgSrc = $(this).find("img").attr("src");
+
+		$(".thumbnails").find("li").removeClass('active');
+		$(this).addClass("active");
+
+		$("#myCanvas").show();
+		$(".drop-image").hide();
+
+		loadImage( imgSrc );
+
+	});
+
+	// HANDLE DRAG & DROP
+	$('html').on('dragenter dragover', function(e) { e.stopPropagation(); });
+
+	$('.drop-image').on('load', function() {
+		if ( this.naturalWidth > 20 || this.naturalHeight > 20 ) {
+		  console.log("IMAGE TOO LARGE");
+		} else {
+			$("#myCanvas").hide();
+			$(".thumbnails li").removeClass("active");
+			loadImage( this.src );
+	  		$(this).show();
+			$('.drop-placeholder').hide();
+		}
+	});
+
+	$('.drop-zone')
+	.on('dragover', function() {
+	  $(this).addClass('drop-over');
+	  return false;
+	})
+	.on('dragleave', function() {
+	  $(this).removeClass('drop-over');
+	  return false;
+	})
+	.on('drop', function(e) {
+
+		if(e.originalEvent.dataTransfer){
+
+			if(e.originalEvent.dataTransfer.files.length) {
+
+				// $('.drop-image').hide();
+				$(this).removeClass('drop-over');
+
+			  	var file = e.originalEvent.dataTransfer.files[0];
+
+				if (!file || file.type.indexOf('image/') !== 0) {
+					console.log("NOT AN IMAGE");
+				} else {
+					if ( true ){
+						var reader = new FileReader();
+						reader.onload = function(e) {
+						  $('.drop-image').attr('src', e.target.result );
+						};
+						reader.readAsDataURL(file);
+					}
+				}
+			  e.preventDefault();
+			  return false;
+
+			}
+		}
+	});
+
+	$('.drop-image, .drop-samples img').on('dragstart', function(e) {
+		e.preventDefault();
+	});
+
+	// logCurious();
 };
+
+/**
+ * @private
+ */
+function loadImage(imgSrc){
+
+	var imageData;
+	var imageCanvas = document.getElementById("myCanvas");
+	var imageCtx    = imageCanvas.getContext("2d");
+	var image       = new Image();
+		image.src = imgSrc;
+
+	$(image).load(function() {
+
+	    imageCtx.drawImage(image, 0, 0, 20, 20);
+	    imageData = imageCtx.getImageData(0, 0, 20, 20);
+		var output = app.getImageData( imageData, image, imageCtx );
+		storage.fetch(function(err, output, info) {
+			if (err) return ui.notification.error(err);
+		 // if (output) ui.scene.load(output);
+			if (output) ui.scene.load( output, "rgba" );
+			if (info) ui.notification.info(info);
+			ui.scene.changed(onAutoSave); // auto save from now on
+		}, output );
+
+	});	
+
+}
+
 
 /**
  * @private
@@ -97,6 +262,7 @@ function logCurious() {
  */
 function bindShortcuts() {
 	document.addEventListener('keydown', onKeyDown);
+	document.addEventListener('keyup', onKeyUp);
 }
 
 /**
@@ -140,7 +306,7 @@ function save(silent) {
 /**
  * @private
  */
-function persist() {
+function persist( local ) {
 	if (persistLock) return;
 	persistLock = true;
 
@@ -152,6 +318,12 @@ function persist() {
 
 	// saves locally
 	var data = save();
+
+	if ( local ) {
+		console.log(JSON.stringify(data));
+		persistLock = false;
+		return;		
+	}
 
 	// persist to a gist
 	storage.persist(data, function(err, info) {
@@ -238,7 +410,19 @@ function onKeyDown(e) {
 		// ctrl + s
 		case 83:
 			e.preventDefault();
-			if (e.ctrlKey) persist();
+			if (e.ctrlKey) {
+
+				if (e.shiftKey){
+
+					persist( true );
+
+				} else {
+	
+					persist();
+
+				}
+
+			}
 			break;
 
 		// n
@@ -261,6 +445,23 @@ function onKeyDown(e) {
 	// 123456789
 	if (e.keyCode >= 49 && e.keyCode <= 57)
 		tool.use('brush').set(ui.palette.color(e.keyCode - 49));
+
+	// Shift Button Pressed
+	if ( e.keyIdentifier === "Shift" )
+		app.shiftHandler = true;
+
+}
+
+/**
+ * @param {event} e
+ * @private
+ */
+function onKeyUp(e) {
+
+	if ( e.keyIdentifier === "Shift" )
+		// Shift Button Unpressed
+		app.shiftHandler = false;
+
 }
 
 /**

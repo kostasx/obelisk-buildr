@@ -299,7 +299,7 @@ scene.save = function(silent) {
  *
  * @param {object} data
  */
-scene.load = function(data) {
+scene.load = function( data, colorFormat ) {
 	var i;
 
 	// ensure colors are numbers
@@ -311,8 +311,20 @@ scene.load = function(data) {
 
 	blocks = matrix(SIZE);
 
-	for (i = 0; i < data.length; i++)
-		scene.add(colors[data[i].c], new obelisk.Point3D(data[i].x, data[i].y, data[i].z));
+	function componentToHex(c) {
+	    var hex = c.toString(16);
+	    return hex.length == 1 ? "0" + hex : hex;
+	}
+	function rgbToHex(r, g, b) {
+	    return "0x" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+	}
+
+	var currentColor;
+
+	for (i = 0; i < data.length; i++){
+		currentColor = ( colorFormat === "rgba" ) ? parseInt( rgbToHex( data[i].rgba[0], data[i].rgba[1], data[i].rgba[2] ) ) : colors[data[i].c];
+		scene.add( currentColor, new obelisk.Point3D(data[i].x, data[i].y, data[i].z) );	
+	}
 
 	scene.draw();
 
@@ -381,6 +393,7 @@ function createBrick(width, height, hexColor) {
  * @private
  */
 function createCube(width, height, depth, hexColor) {
+
 	var dimension = new obelisk.CubeDimension(width, height, depth);
 	var color = new obelisk.CubeColor(
 		obelisk.ColorGeom.applyBrightness(hexColor, -20 * 4),
